@@ -1,0 +1,16 @@
+# ===== Favicon & Image Files =====
+favicon.ico
+favicon.png
+favicon.svg
+favicon-16x16.png
+favicon-32x32.png
+apple-touch-icon.png
+logo.png
+
+# ===== Python Scripts (temp) =====
+*.py
+
+# ===== OS Files =====
+.DS_Store
+Thumbs.db
+desktop.ini
