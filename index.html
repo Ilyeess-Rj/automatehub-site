@@ -1,58 +1,156 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutomateHub</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #f1f5f9;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 20px;
-  }
-  .container { max-width: 600px; }
-  .logo {
-    font-size: 48px;
-    margin-bottom: 20px;
-  }
-  h1 {
-    font-size: 42px;
-    margin-bottom: 16px;
-    background: linear-gradient(90deg, #60a5fa, #a78bfa);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  p {
-    font-size: 18px;
-    color: #94a3b8;
-    margin-bottom: 32px;
-    line-height: 1.6;
-  }
-  .badge {
-    display: inline-block;
-    padding: 8px 20px;
-    background: rgba(96, 165, 250, 0.1);
-    border: 1px solid rgba(96, 165, 250, 0.3);
-    border-radius: 999px;
-    font-size: 14px;
-    color: #60a5fa;
-  }
-</style>
+  <link rel="icon" sizes="32x32" href="ChatGPT Image 3 août 2026, 23_30_09.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutomateHub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .logo {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    p {
+      font-size: 18px;
+      color: #94a3b8;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      border-radius: 999px;
+      font-size: 14px;
+      color: #60a5fa;
+      margin-bottom: 32px;
+    }
+
+    /* العداد التنازلي */
+    .countdown {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      direction: ltr;
+    }
+
+    .time-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      min-width: 80px;
+      backdrop-filter: blur(8px);
+    }
+
+    .time-box span {
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+      color: #dfe20d;
+      line-height: 1;
+    }
+
+    .time-box label {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 6px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
 </head>
 <body>
+
   <div class="container">
     <div class="logo">⚡</div>
     <h1>AutomateHub</h1>
     <p>موقع أتمتة المهام والخدمات الذكية.<br>قريباً... نعملو على إطلاق أول مشروع.</p>
     <span class="badge">Coming Soon 🚀</span>
+
+    <div class="countdown">
+      <div class="time-box">
+        <span id="days">00</span>
+        <label>Days</label>
+      </div>
+      <div class="time-box">
+        <span id="hours">00</span>
+        <label>Hours</label>
+      </div>
+      <div class="time-box">
+        <span id="minutes">00</span>
+        <label>Minutes</label>
+      </div>
+      <div class="time-box">
+        <span id="seconds">00</span>
+        <label>Seconds</label>
+      </div>
+    </div>
   </div>
+
+  <script>
+    // غير التاريخ هنا حسب موعد الإطلاق المطلوب (YYYY-MM-DDTHH:mm:ss)
+    const targetDate = new Date("2027-01-01T00:00:00").getTime();
+
+    function updateTimer() {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        document.querySelector('.countdown').innerHTML = '<p style="color:#60a5fa; font-size: 20px;">تم الإطلاق بنجاح! 🚀</p>';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('days').textContent = String(days).padStart(2, '0');
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+  </script>
+
 </body>
 </html>
