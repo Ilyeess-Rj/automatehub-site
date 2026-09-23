@@ -38,13 +38,41 @@ The project is built on **Vercel Edge Runtime**, delivering lightning-fast token
 
 ## 🛠️ Architecture & Tech Stack
 
-```text
-[ Browser / User UI ]  <--- (Fast SSE Streaming) ---  [ Vercel Edge Runtime (api/chat.js) ]
-                                                                 │
-                                          ┌──────────────────────┴──────────────────────┐
-                                          ▼                                             ▼
-                              [ Tavily Web Search ]                        [ NVIDIA NIM API ]
-                             (Live Facts & Current Data)                 (Llama 3.2 11B Vision)
+```mermaid
+flowchart TD
+    User(["User"]) -->|"sends query"| UI["Chat UI<br/>(index.html)"]
+
+    subgraph Client ["Chat Interface"]
+        UI
+        Session[("Session History<br/>(client state)")]
+        UI -->|"persists session"| Session
+        Session -->|"supplies history"| UI
+    end
+
+    subgraph Edge ["Edge API (/api/chat.js)"]
+        Handler["Chat Handler"]
+        Detection["Search Detection"]
+        Grounding["Search Grounding"]
+        Prompt["Prompt Assembly"]
+        SSE["SSE Response Streamer"]
+
+        Handler -->|"checks query"| Detection
+        Handler -.->|"invokes if needed"| Grounding
+        Grounding -.->|"provides results"| Prompt
+        Handler -->|"assembles context"| Prompt
+    end
+
+    subgraph AI ["AI & Search Services"]
+        Tavily["Tavily Search API"]
+        NVIDIA["NVIDIA NIM Engine<br/>(Llama 3.2 Vision)"]
+    end
+
+    UI -->|"POSTs query & history"| Handler
+    Grounding -.->|"searches web"| Tavily
+    Tavily -.->|"returns live facts"| Grounding
+    Prompt -->|"requests inference"| NVIDIA
+    NVIDIA -->|"streams chunks"| SSE
+    SSE -->|"streams tokens (SSE)"| UI
 ```
 
 * **Frontend:** Modern HTML5, Vanilla JavaScript, CSS3 Glassmorphism (zero bloat, pure speed).
