@@ -2,11 +2,12 @@
 ### *Next-Generation Autonomous Enterprise Intelligence & Workflow Automation Engine*
 
 <p align="center">
-  <img src="logo.png" alt="AutomateHub MIR Logo" width="130" style="filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.6));" />
+  <img src="logo.png" alt="AutomateHub MIR Logo" width="130" style="filter: drop-shadow(0 0 24px rgba(168, 85, 247, 0.7));" />
 </p>
 
 <p align="center">
   <a href="https://automatehub-site.vercel.app/"><img src="https://img.shields.io/badge/Live%20Platform-AutomateHub-blueviolet?style=for-the-badge&logo=vercel" alt="Live Platform"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge&logo=apache" alt="License"></a>
   <img src="https://img.shields.io/badge/Status-Live%2024%2F7-10b981?style=for-the-badge" alt="Status">
   <img src="https://img.shields.io/badge/Powered%20By-NVIDIA%20NIM%20%7C%20Llama%203.2-76b900?style=for-the-badge&logo=nvidia" alt="NVIDIA">
   <img src="https://img.shields.io/badge/Search-Tavily%20Real--Time%20Web-38bdf8?style=for-the-badge" alt="Tavily">
@@ -15,25 +16,25 @@
 
 ---
 
-## 💼 Why Global Enterprises & Fast-Growing Businesses Choose AutomateHub?
+## 💼 Why Global Enterprises & Visionary Founders Choose AutomateHub?
 
 > **"Traditional chatbots answer questions. MIR builds businesses, automates workflows, and uncovers live market intelligence in milliseconds."**
 
-In today's hyper-competitive economy, businesses lose up to **30% of their operational bandwidth** on manual research, fragmented communication, and slow technical workflows. 
+In today's hyper-competitive digital economy, modern enterprises lose **up to 30% of their operational velocity** on manual research, fragmented communication, disjointed automation tools, and legacy systems that cannot think in real-time.
 
-**AutomateHub** is engineered to eliminate this bottleneck. At its heart lies **MIR ⚡**, an autonomous enterprise intelligence agent deployed directly on global edge servers. MIR bridges cutting-edge vision-language models, real-time live web-search grounding, and deep workflow automation architecture to empower modern organizations with unprecedented operational speed.
+**AutomateHub** was engineered from the ground up to solve this enterprise bottleneck. At its core stands **MIR ⚡**, an autonomous enterprise intelligence agent deployed directly on global edge servers. MIR bridges cutting-edge visual reasoning, real-time web-search grounding, and deep workflow automation architecture to empower modern organizations with unprecedented operational speed, security, and market foresight.
 
 ---
 
-## ⚡ What Makes MIR Extraordinary?
+## ⚡ Key Business Capabilities & Market Differentiators
 
-| 🚀 Capability | 🏢 Business Impact | 💡 Tech Powerhouse |
+| 🚀 Enterprise Capability | 🏢 Real-World Business Value | 💡 Tech Powerhouse |
 |---|---|---|
-| **Real-Time Live Web Grounding** | Zero knowledge obsolescence; fetches up-to-the-minute market facts, news, and events. | **Tavily AI Search Engine** with specialized intent classification. |
-| **Sub-Second Streaming Edge AI** | Instant perceived response; zero latency bottlenecks for client communication. | **Vercel Edge V8 Isolates** + Server-Sent Events (SSE). |
-| **Multilingual Mastery** | Seamlessly connects with global & regional markets (English, French, Arabic & Tunisian dialect). | Advanced context-conditioned prompt orchestration. |
-| **Full-Screen Luxury Interface** | Enterprise-grade dark glassmorphism that captivates clients from the first interaction. | Modern **100dvh Glassmorphism** with zero third-party UI lag. |
-| **Mathematical & Analytical Rigor** | Solves complex financial ratios, calculations, and structured data queries with precision. | Integrated computation algorithms & deterministic tools. |
+| **Real-Time Live Web Grounding** | **Eliminates AI hallucinations**; fetches up-to-the-minute market facts, financial news, sports scores, and geopolitical updates. | **Tavily AI Search Engine** with dynamic intent detection and temporal filtering. |
+| **Sub-Second Streaming Edge AI** | **Zero client waiting time**; streams answers token-by-token directly to browser sessions globally. | **Vercel Edge V8 Isolates** + Server-Sent Events (SSE) streaming pipeline. |
+| **Multilingual Fluency** | Connect seamlessly with global markets and MENA/North Africa (English, French, Standard Arabic, and Tunisian dialect). | Context-conditioned prompt orchestration and semantic normalization. |
+| **Full-Screen Luxury Interface** | Elevates corporate brand prestige; engineered with dark glassmorphism that captivates clients instantly. | Modern **100dvh Glassmorphism** with zero third-party UI framework bloat. |
+| **Mathematical & Analytical Rigor** | Computes financial formulas, tax rates, operational metrics, and data aggregations deterministically. | Integrated calculation engine & deterministic algorithmic prompts. |
 
 ---
 
@@ -67,7 +68,7 @@ In today's hyper-competitive economy, businesses lose up to **30% of their opera
 
 ## 🚀 The Superpower Roadmap (Next-Gen Expansion)
 
-We are aggressively scaling MIR from an elite conversational intelligence agent into a **Full-Stack Autonomous AI Automation Engineer & Data Analyst**:
+We are actively advancing MIR from an elite conversational intelligence agent into a **Full-Stack Autonomous AI Automation Engineer & Data Analyst**:
 
 ### 🖼️ 1. Multi-Modal Vision & Visual Document Analysis
 * **Instant Wireframe & Architecture OCR**: Upload screenshots, whiteboard diagrams, UI designs, or product blueprints.
@@ -93,6 +94,34 @@ We are aggressively scaling MIR from an elite conversational intelligence agent 
 
 ---
 
+## 🔒 Enterprise Security & Data Integrity
+
+* **Zero Client-Side Secret Exposure**: All critical credentials (`NVIDIA_API_KEY`, `TAVILY_API_KEY`) remain strictly encapsulated within the serverless edge environment.
+* **Global Edge Execution**: Code runs in stateless, isolated V8 memory spaces, ensuring zero data leakage between user sessions.
+* **CORS & Origin Hardening**: API endpoints implement strict origin checks and method verification.
+
+---
+
+## ⚖️ License & Intellectual Property Protection
+
+This project is licensed under the **Apache License, Version 2.0** (the "License"). You may obtain a copy of the License in the [LICENSE](LICENSE) file or at:
+👉 **[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)**
+
+### 🛡️ What This Means For You and Collaborators:
+
+| 🟢 Permissions Granted | 🔴 Restrictions & IP Protection | 📋 Conditions Required |
+|---|---|---|
+| **Commercial Use**: Organizations may integrate and deploy the source code. | **Trademark Protection**: The names **"AutomateHub"**, **"MIR"**, the lion visual emblem, logos, and brand assets are **strictly reserved trademarks** and may NOT be used without prior written authorization. | **Attribution Notice**: You must retain all copyright, trademark, and origin notices in all distributions. |
+| **Modification**: You may customize, enhance, and extend the engine. | **No Warranty / No Liability**: The software is provided "AS IS", protecting the author from any liability or damages. | **State Changes**: Any modified files must carry prominent notices stating that changes were made. |
+| **Distribution**: You may distribute derivative works under compatible terms. | **Patent Defense**: Includes an express grant of patent rights and automatic termination upon patent litigation. | **License Preservation**: All copies or substantial portions must include the full Apache 2.0 License. |
+
+```text
+Copyright © 2026 Mohammed Ilyes Rajhi (AutomateHub). All Rights Reserved.
+Licensed under the Apache License, Version 2.0.
+```
+
+---
+
 ## 📂 Repository Structure
 
 ```
@@ -103,6 +132,7 @@ automatehub-site/
 ├── logo.png                 # Official AutomateHub Neon Lion Visual Identity
 ├── vercel.json              # Edge engine deployment & runtime configurations
 ├── CNAME                    # Custom domain mapping (automatehub.dpdns.org)
+├── LICENSE                  # Apache License 2.0 Legal Protection & Trademark Reservation
 └── README.md                # Enterprise product manifesto & technical documentation
 ```
 
