@@ -16,6 +16,16 @@
 
 ---
 
+<div align="center">
+
+### 💥💪 **RELENTLESS EVOLUTION • THE INNOVATION NEVER STOPS** 💪💥
+**AutomateHub & MIR are under continuous, aggressive daily development.**  
+Every commit pushes new boundaries: faster Edge speeds, sharper visual reasoning, and deeper enterprise workflow automations. **We never stand still — continuous upgrade is our DNA!** ⚡🔥
+
+</div>
+
+---
+
 ## 💼 Why Global Enterprises & Visionary Founders Choose AutomateHub?
 
 > **"Traditional chatbots answer questions. MIR builds businesses, automates workflows, and uncovers live market intelligence in milliseconds."**
@@ -66,9 +76,9 @@ In today's hyper-competitive digital economy, modern enterprises lose **up to 30
 
 ---
 
-## 🚀 The Superpower Roadmap (Next-Gen Expansion)
+## 🚀 The Superpower Roadmap • Relentless Evolution In Progress 💪🔥
 
-We are actively advancing MIR from an elite conversational intelligence agent into a **Full-Stack Autonomous AI Automation Engineer & Data Analyst**:
+> ⚡ **"Code shipped today is already evolving for tomorrow."** AutomateHub is not a static project; it is an active engineering frontier. Here is what is rolling out:
 
 ### 🖼️ 1. Multi-Modal Vision & Visual Document Analysis
 * **Instant Wireframe & Architecture OCR**: Upload screenshots, whiteboard diagrams, UI designs, or product blueprints.
