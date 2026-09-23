@@ -1,6 +1,8 @@
 // Vercel Serverless Function: /api/chat
 // AutomateHub MIR Agent - High Intelligence & Real-Time Search Engine
 
+export const maxDuration = 60;
+
 const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY || "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";
 const TAVILY_API_KEY = process.env.TAVILY_API_KEY || "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";
 const MODEL_NAME = "meta/llama-3.2-11b-vision-instruct";
@@ -46,7 +48,7 @@ async function performTavilySearch(rawMessage) {
     const res = await fetch("https://api.tavily.com/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(4500),
+      signal: AbortSignal.timeout(6000),
       body: JSON.stringify({
         api_key: TAVILY_API_KEY,
         query: query,
@@ -63,9 +65,8 @@ async function performTavilySearch(rawMessage) {
 
     if (data.results && Array.isArray(data.results)) {
       data.results.forEach((r, idx) => {
-        // Keep snippet compact for super-fast LLM inference
-        const snippet = (r.content || "").slice(0, 280).replace(/\s+/g, ' ');
-        searchResults.push(`• [${r.title}]: ${snippet}`);
+        const snippet = (r.content || "").slice(0, 320).replace(/\s+/g, ' ');
+        searchResults.push(`• [مصدر ${idx + 1}: ${r.title}]: ${snippet}`);
       });
     }
 
@@ -114,11 +115,11 @@ export default async function handler(req, res) {
       day: 'numeric'
     });
 
-    const systemPrompt = `أنت MIR ⚡ (مير)، الوكيل الذكي الرسمي والمتطور لمنصة AutomateHub (https://automatehub-site.vercel.app/).
+    const systemPrompt = `أنت MIR ⚡ (مير)، الوكيل الذكي الرسمي والمتطور جداً لمنصة AutomateHub (https://automatehub-site.vercel.app/).
 تاريخ اليوم الرسمي: ${todayDate}.
 
 تعليمات الأداء العالي:
-1. قدم نفسك دائماً باسم MIR ⚡ بأسلوب احترافي، حيوي، وواثق ومليء بالطاقة.
+1. قدم نفسك دائماً باسم MIR ⚡ بأسلوب احترافي، حيوي، وواثق ومليء بالطاقة والذكاء.
 2. إذا سألك المستخدم عن أخبار الذكاء الاصطناعي (AI/IA)، التكنولوجيا، نتائج المباريات، أو الأحداث الحالية:
    - لا تكن أبداً بارداً أو عاماً! بل قدم إجابات ثرية ومنسقة ومفصلة بأحدث الأسماء والشركات (مثل OpenAI, DeepSeek, Anthropic, Google, Meta)، والموديلات، والتواريخ، والنتائج الدقيقة.
    - استند بدقة وحرفية إلى سياق البحث اللحظي المباشر المرفق أدناه لتذكر آخر مستجدات الفترة الحالية.
@@ -151,12 +152,12 @@ ${searchContext ? `### نتائج البحث المباشر في الأنترن�
         "Content-Type": "application/json",
         "Authorization": `Bearer ${NVIDIA_API_KEY}`
       },
-      signal: AbortSignal.timeout(20000),
+      signal: AbortSignal.timeout(35000),
       body: JSON.stringify({
         model: MODEL_NAME,
         messages: formattedMessages,
         temperature: 0.35,
-        max_tokens: 500
+        max_tokens: 450
       })
     });
 
