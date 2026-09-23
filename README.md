@@ -145,15 +145,26 @@ automatehub-site/
 
 ---
 
-## 🤝 Partner With AutomateHub
+## 🤝 Work With Me • AutomateHub
 
-Are you looking to integrate custom AI agents, automate manual employee workflows, or license the **MIR Engine** for your enterprise operations?
+**AutomateHub** is an independent AI & automation technology brand created and engineered by **Mohammed Ilyes Rajhi** ([@Ilyeess-Rj](https://github.com/Ilyeess-Rj)).
 
-* 📧 **Contact & Inquiries:** [AutomateHub Inquiries](https://automatehub-site.vercel.app/)
-* 💼 **Ecosystem:** Next-Gen Intelligent Workflows & Robotic Process Automation
+Are you a founder, business, or company looking to:
+- ⚡ **Build custom autonomous AI agents** tailored to your private data or internal workflows?
+- 🔄 **Automate repetitive manual operations** with n8n, Make, custom APIs, and intelligent pipelines?
+- 🚀 **Integrate the MIR AI Engine** into your business infrastructure?
+
+Let's build together:
+
+* 📧 **Direct Email:** [rajhimohamedilyes@gmail.com](mailto:rajhimohamedilyes@gmail.com)
+* 🐙 **GitHub Profile:** [@Ilyeess-Rj](https://github.com/Ilyeess-Rj)
+* 🌐 **Live Platform:** [automatehub-site.vercel.app](https://automatehub-site.vercel.app/)
+* 💼 **Brand Identity:** **AutomateHub** • Independent Intelligent Systems & Automation Engineering
 
 ---
 
 <p align="center">
-  <b>© 2026 AutomateHub • Engineered for High-Growth Enterprises ⚡</b>
+  <b>Created with passion by Mohammed Ilyes Rajhi • AutomateHub ⚡</b><br>
+  <sub>Licensed under the Apache License 2.0</sub>
 </p>
+
