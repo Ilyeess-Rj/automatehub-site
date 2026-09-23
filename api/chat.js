@@ -1,13 +1,14 @@
-// Vercel Serverless Function: /api/chat
-// AutomateHub MIR Agent - High Intelligence & Real-Time Search Engine
+// Vercel Edge Function: /api/chat
+// AutomateHub MIR Agent - Ultra-Fast Streaming & Real-Time Search Engine
 
-export const maxDuration = 60;
+export const config = {
+  runtime: 'edge',
+};
 
 const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY || "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";
 const TAVILY_API_KEY = process.env.TAVILY_API_KEY || "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";
 const MODEL_NAME = "meta/llama-3.2-11b-vision-instruct";
 
-// Normalize Arabic text (unify hamzas, remove tashkeel)
 function normalizeArabic(text) {
   return (text || "")
     .toLowerCase()
@@ -37,7 +38,7 @@ async function performTavilySearch(rawMessage) {
     topic = "news";
     days = 2;
   }
-  // 3. General News, Current Events, Weather, Stocks
+  // 3. General News, Current Events, Weather
   else if (/(اخبار|خبر|مستجدات|جديد|حدث|تطورات|طقس|سعر|من هو|شكون|news|latest|today|yesterday|price|weather)/i.test(norm)) {
     query = rawMessage;
     topic = "news";
@@ -48,7 +49,7 @@ async function performTavilySearch(rawMessage) {
     const res = await fetch("https://api.tavily.com/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(6000),
+      signal: AbortSignal.timeout(4000),
       body: JSON.stringify({
         api_key: TAVILY_API_KEY,
         query: query,
@@ -72,35 +73,42 @@ async function performTavilySearch(rawMessage) {
 
     return searchResults.join("\n");
   } catch (err) {
-    console.error("Tavily search skipped/error:", err.message);
+    console.error("Tavily search skipped:", err.message);
     return "";
   }
 }
 
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
-
+export default async function handler(req) {
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      }
+    });
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   try {
-    const { message, history } = req.body || {};
+    const body = await req.json();
+    const { message, history } = body || {};
+
     if (!message || typeof message !== 'string') {
-      return res.status(400).json({ error: 'Message is required' });
+      return new Response(JSON.stringify({ error: 'Message is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     const norm = normalizeArabic(message);
-
-    // Search intent detector
     const needsSearch = /(اخبار|خبر|مستجدات|جديد|اخر|تطورات|حدث|ia|ai|ذكاء|اصطناعي|تكنولوجيا|ماتش|مباراه|نتيجه|كوره|برشلونه|ريال|دوري|سعر|طقس|من هو|شكون|اليوم|امس|البارح|match|score|result|news|latest|today|yesterday)/i.test(norm);
 
     let searchContext = "";
@@ -116,14 +124,14 @@ export default async function handler(req, res) {
     });
 
     const systemPrompt = `أنت MIR ⚡ (مير)، الوكيل الذكي الرسمي والمتطور جداً لمنصة AutomateHub (https://automatehub-site.vercel.app/).
-تاريخ اليوم الرسمي: ${todayDate}.
+تاريخ اليوم الرسمي والفعلي هو: ${todayDate}.
 
 تعليمات الأداء العالي:
 1. قدم نفسك دائماً باسم MIR ⚡ بأسلوب احترافي، حيوي، وواثق ومليء بالطاقة والذكاء.
 2. إذا سألك المستخدم عن أخبار الذكاء الاصطناعي (AI/IA)، التكنولوجيا، نتائج المباريات، أو الأحداث الحالية:
    - لا تكن أبداً بارداً أو عاماً! بل قدم إجابات ثرية ومنسقة ومفصلة بأحدث الأسماء والشركات (مثل OpenAI, DeepSeek, Anthropic, Google, Meta)، والموديلات، والتواريخ، والنتائج الدقيقة.
    - استند بدقة وحرفية إلى سياق البحث اللحظي المباشر المرفق أدناه لتذكر آخر مستجدات الفترة الحالية.
-   - نسق إجابتك باستخدام العناوين العريضة والنقاط وقائمة المصادر والإيموجي.
+   - نسق إجابتك باستخدام العناوين العريضة والنقاط وقائمة المصادر والإيموجي المناسبة.
 3. أجب بنفس لغة ولهجة المستخدم (تونسي، عربي، فرنسي، إنجليزي) بذكاء وحرارة وترحاب.
 4. إذا سأل عن AutomateHub: بين أنها المنصة الرائدة القادمة لأتمتة العمليات ووكلاء الذكاء الاصطناعي لرفع إنتاجية الأعمال.
 
@@ -152,31 +160,37 @@ ${searchContext ? `### نتائج البحث المباشر في الأنترن�
         "Content-Type": "application/json",
         "Authorization": `Bearer ${NVIDIA_API_KEY}`
       },
-      signal: AbortSignal.timeout(35000),
       body: JSON.stringify({
         model: MODEL_NAME,
         messages: formattedMessages,
         temperature: 0.35,
-        max_tokens: 450
+        max_tokens: 600,
+        stream: true
       })
     });
 
     if (!nvidiaRes.ok) {
       const errText = await nvidiaRes.text();
-      console.error("NVIDIA API Error:", nvidiaRes.status, errText);
-      return res.status(nvidiaRes.status).json({
-        error: "NVIDIA API error",
-        details: errText
+      return new Response(JSON.stringify({ error: "NVIDIA API error", details: errText }), {
+        status: nvidiaRes.status,
+        headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    const nvidiaData = await nvidiaRes.json();
-    const reply = nvidiaData.choices?.[0]?.message?.content || "عذراً، لم أتمكن من الحصول على إجابة.";
-
-    return res.status(200).json({ reply });
+    return new Response(nvidiaRes.body, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*'
+      }
+    });
 
   } catch (err) {
-    console.error("Server error:", err);
-    return res.status(500).json({ error: "Internal Server Error", message: err.message });
+    console.error("Edge handler error:", err);
+    return new Response(JSON.stringify({ error: "Internal Server Error", message: err.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

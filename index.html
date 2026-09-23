@@ -684,14 +684,60 @@
           throw new Error('فشل الاتصال بالخادم (' + response.status + ')');
         }
 
-        const data = await response.json();
-        typingEl.remove();
+        const contentType = response.headers.get('content-type') || '';
 
-        const reply = data.reply || 'عذراً، لم أتلقَّ رداً مناسباً.';
-        appendMessage('bot', reply);
+        if (contentType.includes('text/event-stream') && response.body) {
+          if (typingEl) typingEl.remove();
 
-        chatHistory.push({ role: 'user', content: message });
-        chatHistory.push({ role: 'assistant', content: reply });
+          const botRow = appendMessage('bot', '');
+          const botBubble = botRow.querySelector('.msg-bubble');
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let fullText = '';
+          let buffer = '';
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop();
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed.startsWith('data: ')) {
+                const dataStr = trimmed.slice(6).trim();
+                if (dataStr === '[DONE]') continue;
+                try {
+                  const json = JSON.parse(dataStr);
+                  const token = json.choices?.[0]?.delta?.content || '';
+                  if (token) {
+                    fullText += token;
+                    botBubble.innerHTML = marked.parse(fullText);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                  }
+                } catch (e) {}
+              }
+            }
+          }
+
+          if (!fullText) {
+            botBubble.textContent = 'عذراً، لم أتمكن من الحصول على إجابة.';
+          } else {
+            chatHistory.push({ role: 'user', content: message });
+            chatHistory.push({ role: 'assistant', content: fullText });
+          }
+
+        } else {
+          const data = await response.json();
+          if (typingEl) typingEl.remove();
+          const reply = data.reply || data.error || 'عذراً، لم أتلقَّ رداً.';
+          appendMessage('bot', reply);
+          chatHistory.push({ role: 'user', content: message });
+          chatHistory.push({ role: 'assistant', content: reply });
+        }
 
       } catch (err) {
         if (typingEl) typingEl.remove();
