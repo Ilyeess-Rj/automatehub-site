@@ -54,6 +54,30 @@ The project is built on **Vercel Edge Runtime**, delivering lightning-fast token
 
 ---
 
+## ⚙️ How It Works
+
+1. **User Request & Sanitization:** The frontend dispatches user queries to the Edge API endpoint (`/api/chat.js`).
+2. **Intent Analysis & Web Grounding:** The backend detects if the prompt pertains to live sports, breaking news, or date-sensitive queries. If triggered, it queries Tavily in real time.
+3. **Prompt Augmentation:** Live search results and system guidelines are injected into the context window.
+4. **Token Streaming (SSE):** NVIDIA NIM processes the inference and streams tokens back through Server-Sent Events, achieving sub-second first-token latency.
+
+---
+
+## 🔒 Security & Data Privacy
+
+* **Zero Client-Side Secrets:** API tokens (`NVIDIA_API_KEY`, `TAVILY_API_KEY`) reside exclusively in server-side environment variables.
+* **Edge Isolation:** Requests run in stateless V8 micro-containers with no cross-session data leakage.
+* **Sanitized Inputs:** Strips malicious control characters and restricts allowed HTTP methods to `POST`.
+
+---
+
+## ⚠️ Current Limitations
+
+* **Session Memory:** Current conversations are client-ephemeral (stored in browser memory) and reset on hard refresh (cloud database persistence is planned in the roadmap).
+* **API Rate Limits:** Free-tier upstream APIs (NVIDIA NIM / Tavily) may impose burst rate limits during peak usage.
+
+---
+
 ## 🚀 Active Roadmap & Planned Features 💪
 
 AutomateHub is under active, steady development. New capabilities are being integrated step-by-step:
@@ -66,10 +90,30 @@ AutomateHub is under active, steady development. New capabilities are being inte
 
 ---
 
-## 🌐 Live Platform
+## 🌐 Live Platform & Demo
 
 * 🚀 **Primary URL:** [https://automatehub-site.vercel.app/](https://automatehub-site.vercel.app/)
 * 🌐 **Custom Domain:** [https://automatehub.dpdns.org/](https://automatehub.dpdns.org/)
+
+---
+
+## 💻 Local Setup & Deployment
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Ilyeess-Rj/automatehub-site.git
+   cd automatehub-site
+   ```
+2. **Environment Variables:**
+   Set the following variables in Vercel or your local environment (`.env`):
+   ```env
+   NVIDIA_API_KEY=your_nvidia_nim_key
+   TAVILY_API_KEY=your_tavily_key
+   ```
+3. **Deploy with Vercel CLI:**
+   ```bash
+   vercel --prod
+   ```
 
 ---
 
