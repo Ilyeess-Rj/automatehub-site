@@ -232,36 +232,25 @@
     }
 
     .welcome-avatar {
-      width: 104px;
-      height: 104px;
+      width: 96px;
+      height: 96px;
       margin: 0 auto 18px;
-      border-radius: 24px;
-      background: #070913;
-      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 30px rgba(99, 102, 241, 0.4), 0 10px 30px rgba(0, 0, 0, 0.7);
-      overflow: hidden;
+      background: transparent;
     }
 
-    .avatar-border-frame {
-      position: absolute;
-      inset: 0;
+    .welcome-avatar img {
       width: 100%;
       height: 100%;
-      object-fit: fill;
-      pointer-events: none;
-      z-index: 1;
+      object-fit: contain;
+      filter: drop-shadow(0 0 16px rgba(236, 72, 153, 0.75)) drop-shadow(0 0 35px rgba(168, 85, 247, 0.4));
+      transition: transform 0.3s ease;
     }
 
-    .avatar-logo-center {
-      width: 74%;
-      height: 74%;
-      object-fit: contain;
-      position: relative;
-      z-index: 5;
-      filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.7));
+    .welcome-avatar img:hover {
+      transform: scale(1.06);
     }
 
     .welcome-title {
@@ -592,8 +581,7 @@
       <!-- Welcome Screen (Visible initially) -->
       <div class="welcome-container" id="welcome-view">
         <div class="welcome-avatar">
-          <img src="avatar-border.gif" class="avatar-border-frame" alt="Neon Frame">
-          <img src="logo.png" class="avatar-logo-center" alt="MIR">
+          <img src="logo.png" alt="MIR">
         </div>
         <h2 class="welcome-title">أهلاً بك! أنا MIR ⚡</h2>
         <p class="welcome-desc">الوكيل الذكي الرسمي لمنصة <b>AutomateHub</b>. أستطيع الإجابة عن كل تساؤلاتك، البحث المباشر في الأخبار ومباريات اليوم، إجراء العمليات الحسابية، وتقديم خدمات الأتمتة.</p>
