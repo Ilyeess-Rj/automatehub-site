@@ -3,5 +3,18 @@
     "api/chat.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "automatehub.dpdns.org"
+        }
+      ],
+      "destination": "https://automatehub-site.vercel.app/:path*",
+      "permanent": true
+    }
+  ]
 }
