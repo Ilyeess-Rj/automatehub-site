@@ -499,8 +499,8 @@
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.15);
       display: flex;
-      align-items: flex-end;
-      gap: 10px;
+      align-items: center;
+      gap: 12px;
     }
 
     #user-input {
@@ -513,19 +513,20 @@
       font-family: inherit;
       resize: none;
       max-height: 120px;
-      min-height: 26px;
-      padding: 8px 6px;
+      min-height: 28px;
+      padding: 10px 14px;
       line-height: 1.5;
+      direction: rtl;
     }
 
     #user-input::placeholder {
-      color: #64748b;
+      color: #94a3b8;
     }
 
     .send-btn {
       width: 44px;
       height: 44px;
-      border-radius: 14px;
+      border-radius: 12px;
       background: var(--primary-gradient);
       border: none;
       color: #ffffff;
@@ -533,7 +534,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 20px;
       transition: all 0.2s ease;
       flex-shrink: 0;
       box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
@@ -627,21 +628,21 @@
         <p class="welcome-desc">الوكيل الذكي الرسمي لمنصة <b>AutomateHub</b>. أستطيع الإجابة عن كل تساؤلاتك، البحث المباشر في الأخبار ومباريات اليوم، إجراء العمليات الحسابية، وتقديم خدمات الأتمتة.</p>
 
         <div class="chips-grid">
-          <button class="chip-btn" onclick="sendPrompt('ما هي نتيجة آخر مباراة لبرشلونة اليوم؟')">
-            <span class="chip-icon">⚽</span>
-            <span>نتيجة آخر مباراة لبرشلونة اليوم</span>
+          <button class="chip-btn" data-prompt="ما هي أحدث التطورات وأخبار الذكاء الاصطناعي اليوم؟">
+            <span class="chip-icon">🤖</span>
+            <span>أحدث تطورات وأخبار الذكاء الاصطناعي</span>
           </button>
-          <button class="chip-btn" onclick="sendPrompt('ما هي أحدث أخبار الذكاء الاصطناعي اليوم؟')">
-            <span class="chip-icon">📰</span>
-            <span>أحدث أخبار الذكاء الاصطناعي اليوم</span>
+          <button class="chip-btn" data-prompt="كيف يمكن لأتمتة العمليات بالذكاء الاصطناعي تحسين إنتاجية الأعمال؟">
+            <span class="chip-icon">⚡</span>
+            <span>أتمتة العمليات ووكلاء الذكاء الاصطناعي</span>
           </button>
-          <button class="chip-btn" onclick="sendPrompt('احسب لي بدقة: (450 * 1.19) - 85')">
-            <span class="chip-icon">🧮</span>
-            <span>احسب: (450 * 1.19) - 85</span>
+          <button class="chip-btn" data-prompt="ما هي أهم الخدمات والحلول التي تقدمها منصة AutomateHub؟">
+            <span class="chip-icon">🌐</span>
+            <span>استكشاف منصة وخدمات AutomateHub</span>
           </button>
-          <button class="chip-btn" onclick="sendPrompt('عرفني على مشروع ومنصة AutomateHub وخدماتها؟')">
-            <span class="chip-icon">🚀</span>
-            <span>ما هي منصة وخدمات AutomateHub؟</span>
+          <button class="chip-btn" data-prompt="ساعدني في تحليل فكرة مشروع وتحويلها إلى خطة عمل تقنية">
+            <span class="chip-icon">💡</span>
+            <span>استشارة تقنية وتخطيط المشاريع</span>
           </button>
         </div>
       </div>
@@ -686,7 +687,19 @@
       welcomeView.style.display = 'block';
     });
 
+    // Card prompts click handler
+    document.querySelectorAll('.chip-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const text = this.getAttribute('data-prompt');
+        if (text) {
+          userInput.value = text;
+          sendMessage();
+        }
+      });
+    });
+
     function sendPrompt(text) {
+      if (!text) return;
       userInput.value = text;
       sendMessage();
     }
