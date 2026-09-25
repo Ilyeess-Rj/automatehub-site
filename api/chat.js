@@ -158,8 +158,10 @@ ${searchContext ? `### نتائج البحث المباشر في الويب:\n${
       body: JSON.stringify({
         model: MODEL_NAME,
         messages: formattedMessages,
-        temperature: 0.4,
-        max_tokens: 2048,
+        temperature: 0.6,
+        presence_penalty: 0.5,
+        frequency_penalty: 0.5,
+        max_tokens: 1500,
         stream: true
       })
     });
