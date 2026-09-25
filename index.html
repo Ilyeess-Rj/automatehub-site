@@ -740,6 +740,7 @@
 
         const contentType = response.headers.get('content-type') || '';
 
+        if (contentType.includes('text/event-stream') && response.body) {
           let botRow = null;
           let botBubble = null;
           let fullText = '';
