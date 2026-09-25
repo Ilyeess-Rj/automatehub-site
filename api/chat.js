@@ -21,19 +21,21 @@ function normalizeArabic(text) {
 async function performNewsSearch(rawMessage) {
   const norm = normalizeArabic(rawMessage);
 
-  let query = rawMessage;
+  let query = rawMessage.trim();
   let language = "ar,en,fr";
   let category = "";
 
-  // 1. AI & Tech
-  if (/(ia|ai|ذكاء|اصطناعي|تكنولوجيا|تقنية|موديل|نماذج|deepseek|openai|chatgpt|anthropic|claude|gemini)/i.test(norm)) {
-    query = "artificial intelligence AI OpenAI DeepSeek Anthropic Meta latest";
+  // 1. AI, Tech, Startups & Global Ecosystem
+  if (/(ia|ai|ذكاء|اصطناعي|تكنولوجيا|تقنية|موديل|نماذج|llm|agent|deepseek|openai|chatgpt|anthropic|claude|gemini|mistral|meta|llama|grok|nvidia|google)/i.test(norm)) {
+    // نحافظ على كلمات المستخدم مع إثراء الاستعلام بأوسع المفاهيم التقنية
+    const cleanAI = rawMessage.replace(/[؟?!.,]/g, '').trim();
+    query = cleanAI.length > 3 ? cleanAI : "artificial intelligence AI LLMs models tech breakthroughs updates";
     category = "technology";
   }
-  // 2. Football & Sports
-  else if (/(ماتش|مباراه|نتيجه|كوره|برشلونه|ريال|دوري|ابطال|اهداف|match|score|result|vs|barca|madrid|liga)/i.test(norm)) {
-    const cleanQuery = rawMessage.replace(/\b(match|result|score|today|yesterday|what|is|the|of|for|مباراة|ماتش|نتيجة|اليوم|أمس|البارح)\b/gi, '').trim();
-    query = (cleanQuery.length > 2 ? cleanQuery : rawMessage) + " match score result";
+  // 2. Football & Sports (شامل للماضي، الحاضر، الجداول والمباريات القادمة)
+  else if (/(ماتش|مباراه|مباريات|مقابله|نتيجه|كوره|برشلونه|ريال|دوري|ابطال|اهداف|ترتيب|جدول|match|matches|score|fixture|fixtures|schedule|vs|barca|madrid|liga|ucl)/i.test(norm)) {
+    const cleanSport = rawMessage.replace(/[؟?!.,]/g, '').trim();
+    query = cleanSport.length > 3 ? cleanSport : "football match score fixtures schedule";
     category = "sports";
   }
 
@@ -46,7 +48,7 @@ async function performNewsSearch(rawMessage) {
 
     const res = await fetch(url.toString(), {
       method: "GET",
-      signal: AbortSignal.timeout(5000)
+      signal: AbortSignal.timeout(6000)
     });
 
     if (!res.ok) return "";
@@ -54,15 +56,20 @@ async function performNewsSearch(rawMessage) {
     const data = await res.json();
     let searchResults = [];
 
+    // نأخذ حتى 6 نتائج كاملة، مع عمق تفصيلي (Snippet يصل إلى 700 حرف وتاريخ النشر)
     if (data.results && Array.isArray(data.results)) {
-      data.results.slice(0, 3).forEach((item, idx) => {
+      data.results.slice(0, 6).forEach((item, idx) => {
         const title = item.title || "";
-        const desc = (item.description || item.content || "").slice(0, 300).replace(/\s+/g, ' ');
-        searchResults.push(`• [خبر ${idx + 1}: ${title}]: ${desc}`);
+        const pubDate = item.pubDate ? ` [بتاريخ: ${item.pubDate}]` : "";
+        const source = item.source_name ? ` (المصدر: ${item.source_name})` : "";
+        const desc = (item.description || item.content || "").slice(0, 700).replace(/\s+/g, ' ');
+        if (title || desc) {
+          searchResults.push(`• [المرجع ${idx + 1}${source}${pubDate}]: ${title} - ${desc}`);
+        }
       });
     }
 
-    return searchResults.join("\n");
+    return searchResults.join("\n\n");
   } catch (err) {
     console.error("NewsData search skipped:", err.message);
     return "";
@@ -118,19 +125,20 @@ export default async function handler(req) {
       day: 'numeric'
     });
 
-    const systemPrompt = `أنت MIR ⚡ (مير)، الوكيل الذكي الرسمي والمتطور جداً لمنصة AutomateHub (https://automatehub-site.vercel.app/).
-تاريخ اليوم الرسمي والفعلي هو: ${todayDate}.
+    const systemPrompt = `أنت MIR ⚡ (مير)، الوكيل الذكي الرسمي والمتطور لمنصة AutomateHub (https://automatehub-site.vercel.app/).
+تاريخ اليوم الفعلي هو: ${todayDate}.
 
-تعليمات الأداء العالي:
-1. قدم نفسك دائماً باسم MIR ⚡ بأسلوب احترافي، حيوي، وواثق ومليء بالطاقة والذكاء.
-2. إذا سألك المستخدم عن أخبار، تكنولوجيا، مباريات، أو مستجدات:
-   - قدم إجابات ثرية ومنسقة ومفصلة.
-   - إذا توفرت نتائج البحث المباشر أدناه، استند إليها بدقة. وإن لم تتوفر، أجب بأفضل معلوماتك وتحليلك بذكاء وبدون إحباط المستخدم.
-   - أكمل دائماً إجابتك بالكامل ولا تتوقف في منتصف الجملة.
+تعليمات تقديم الإجابات التقنية والمعلوماتية الاحترافية:
+1. قدم نفسك باسم MIR ⚡ بأسلوب واثق، خبير وعالي الاحترافية.
+2. عند الإجابة عن التكنولوجيا، الذكاء الاصطناعي، الشركات، والرياضة (المباريات السابقة أو القادمة):
+   - تجنب الإجابات السطحية والموجزة! قدم تفاصيل غنية، تشمل التواريخ الدقيقة، الأطراف، النتائج، المواعيد، والتحليلات.
+   - إذا توفرت مراجع بحث الويب أدناه، استند إليها بدقة واذكر تفاصيلها الموثقة وتواريخها.
+   - في الرياضة: وضح إن كانت المباراة لُعبت بالفعل مع النتيجة والمسجلين، أو موعدها القادم والبطولة والملعب إن كانت مجدولة.
+   - نسق إجابتك باستخدام العناوين الواضحة، النقاط، والجداول إذا لزم الأمر.
 3. أجب بنفس لغة ولهجة المستخدم (تونسي، عربي، فرنسي، إنجليزي) بذكاء وحرارة وترحاب.
-4. نسق إجاباتك بالعناوين العريضة والنقاط الواضحة.
+4. أنهِ إجابتك دائماً بشكل مكتمل ومنطقي.
 
-${searchContext ? `### نتائج البحث المباشر في الويب:\n${searchContext}\n` : ""}`;
+${searchContext ? `### مراجع ومعلومات البحث المباشر في الويب:\n${searchContext}\n` : ""}`;
 
     const formattedMessages = [
       { role: "system", content: systemPrompt }
