@@ -727,45 +727,58 @@
 
         const contentType = response.headers.get('content-type') || '';
 
-        if (contentType.includes('text/event-stream') && response.body) {
-          if (typingEl) typingEl.remove();
-
-          const botRow = appendMessage('bot', '');
-          const botBubble = botRow.querySelector('.msg-bubble');
-
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
+          let botRow = null;
+          let botBubble = null;
           let fullText = '';
-          let buffer = '';
 
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
+          try {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
 
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop();
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
 
-            for (const line of lines) {
-              const trimmed = line.trim();
-              if (trimmed.startsWith('data: ')) {
-                const dataStr = trimmed.slice(6).trim();
-                if (dataStr === '[DONE]') continue;
-                try {
-                  const json = JSON.parse(dataStr);
-                  const token = json.choices?.[0]?.delta?.content || '';
-                  if (token) {
-                    fullText += token;
-                    botBubble.innerHTML = marked.parse(fullText);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                  }
-                } catch (e) {}
+              if (!botRow) {
+                if (typingEl) typingEl.remove();
+                botRow = appendMessage('bot', '');
+                botBubble = botRow.querySelector('.msg-bubble');
+              }
+
+              buffer += decoder.decode(value, { stream: true });
+              const lines = buffer.split('\n');
+              buffer = lines.pop();
+
+              for (const line of lines) {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('data: ')) {
+                  const dataStr = trimmed.slice(6).trim();
+                  if (dataStr === '[DONE]') continue;
+                  try {
+                    const json = JSON.parse(dataStr);
+                    const token = json.choices?.[0]?.delta?.content || '';
+                    if (token) {
+                      fullText += token;
+                      botBubble.innerHTML = marked.parse(fullText);
+                      chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                  } catch (e) {}
+                }
               }
             }
+          } catch (streamErr) {
+            console.warn('Stream ended or interrupted:', streamErr);
           }
 
+          if (typingEl) typingEl.remove();
+
           if (!fullText) {
-            botBubble.textContent = 'عذراً، لم أتمكن من الحصول على إجابة.';
+            if (!botRow) {
+              appendMessage('bot', 'عذراً، لم أتمكن من الحصول على إجابة. يرجى إعادة المحاولة.');
+            } else {
+              botBubble.textContent = 'عذراً، لم أتمكن من الحصول على إجابة.';
+            }
           } else {
             chatHistory.push({ role: 'user', content: message });
             chatHistory.push({ role: 'assistant', content: fullText });

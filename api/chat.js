@@ -6,7 +6,7 @@ export const config = {
 };
 
 const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY || "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";
-const TAVILY_API_KEY = process.env.TAVILY_API_KEY || "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";
+const NEWSDATA_API_KEY = process.env.NEWSDATA_API_KEY || "pub_1cad427f82c94e54a40826588354b207";
 const MODEL_NAME = "meta/llama-3.2-11b-vision-instruct";
 
 function normalizeArabic(text) {
@@ -18,45 +18,35 @@ function normalizeArabic(text) {
     .replace(/[\u064B-\u065F]/g, '');
 }
 
-async function performTavilySearch(rawMessage) {
+async function performNewsSearch(rawMessage) {
   const norm = normalizeArabic(rawMessage);
 
   let query = rawMessage;
-  let topic = "general";
-  let days = 3;
+  let language = "ar,en,fr";
+  let category = "";
 
-  // 1. AI, Tech, LLMs
+  // 1. AI & Tech
   if (/(ia|ai|ذكاء|اصطناعي|تكنولوجيا|تقنية|موديل|نماذج|deepseek|openai|chatgpt|anthropic|claude|gemini)/i.test(norm)) {
-    query = "latest artificial intelligence AI models OpenAI DeepSeek Anthropic Meta updates breakthroughs September 2026";
-    topic = "news";
-    days = 7;
+    query = "artificial intelligence AI OpenAI DeepSeek Anthropic Meta latest";
+    category = "technology";
   }
-  // 2. Football & Sports Matches
+  // 2. Football & Sports
   else if (/(ماتش|مباراه|نتيجه|كوره|برشلونه|ريال|دوري|ابطال|اهداف|match|score|result|vs|barca|madrid|liga)/i.test(norm)) {
     const cleanQuery = rawMessage.replace(/\b(match|result|score|today|yesterday|what|is|the|of|for|مباراة|ماتش|نتيجة|اليوم|أمس|البارح)\b/gi, '').trim();
-    query = (cleanQuery.length > 2 ? cleanQuery : rawMessage) + " football match score result September 2026";
-    topic = "news";
-    days = 2;
-  }
-  // 3. General News, Current Events, Weather
-  else if (/(اخبار|خبر|مستجدات|جديد|حدث|تطورات|طقس|سعر|من هو|شكون|news|latest|today|yesterday|price|weather)/i.test(norm)) {
-    query = rawMessage;
-    topic = "news";
-    days = 4;
+    query = (cleanQuery.length > 2 ? cleanQuery : rawMessage) + " match score result";
+    category = "sports";
   }
 
   try {
-    const res = await fetch("https://api.tavily.com/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(4000),
-      body: JSON.stringify({
-        api_key: TAVILY_API_KEY,
-        query: query,
-        topic: topic,
-        days: days,
-        max_results: 3
-      })
+    const url = new URL("https://newsdata.io/api/1/news");
+    url.searchParams.append("apikey", NEWSDATA_API_KEY);
+    url.searchParams.append("q", query);
+    url.searchParams.append("language", language);
+    if (category) url.searchParams.append("category", category);
+
+    const res = await fetch(url.toString(), {
+      method: "GET",
+      signal: AbortSignal.timeout(5000)
     });
 
     if (!res.ok) return "";
@@ -65,15 +55,16 @@ async function performTavilySearch(rawMessage) {
     let searchResults = [];
 
     if (data.results && Array.isArray(data.results)) {
-      data.results.forEach((r, idx) => {
-        const snippet = (r.content || "").slice(0, 320).replace(/\s+/g, ' ');
-        searchResults.push(`• [مصدر ${idx + 1}: ${r.title}]: ${snippet}`);
+      data.results.slice(0, 3).forEach((item, idx) => {
+        const title = item.title || "";
+        const desc = (item.description || item.content || "").slice(0, 300).replace(/\s+/g, ' ');
+        searchResults.push(`• [خبر ${idx + 1}: ${title}]: ${desc}`);
       });
     }
 
     return searchResults.join("\n");
   } catch (err) {
-    console.error("Tavily search skipped:", err.message);
+    console.error("NewsData search skipped:", err.message);
     return "";
   }
 }
@@ -113,7 +104,11 @@ export default async function handler(req) {
 
     let searchContext = "";
     if (needsSearch) {
-      searchContext = await performTavilySearch(message);
+      try {
+        searchContext = await performNewsSearch(message);
+      } catch (e) {
+        searchContext = "";
+      }
     }
 
     const todayDate = new Date().toLocaleDateString('ar-TN', {
@@ -128,14 +123,14 @@ export default async function handler(req) {
 
 تعليمات الأداء العالي:
 1. قدم نفسك دائماً باسم MIR ⚡ بأسلوب احترافي، حيوي، وواثق ومليء بالطاقة والذكاء.
-2. إذا سألك المستخدم عن أخبار الذكاء الاصطناعي (AI/IA)، التكنولوجيا، نتائج المباريات، أو الأحداث الحالية:
-   - لا تكن أبداً بارداً أو عاماً! بل قدم إجابات ثرية ومنسقة ومفصلة بأحدث الأسماء والشركات (مثل OpenAI, DeepSeek, Anthropic, Google, Meta)، والموديلات، والتواريخ، والنتائج الدقيقة.
-   - استند بدقة وحرفية إلى سياق البحث اللحظي المباشر المرفق أدناه لتذكر آخر مستجدات الفترة الحالية.
-   - نسق إجابتك باستخدام العناوين العريضة والنقاط وقائمة المصادر والإيموجي المناسبة.
+2. إذا سألك المستخدم عن أخبار، تكنولوجيا، مباريات، أو مستجدات:
+   - قدم إجابات ثرية ومنسقة ومفصلة.
+   - إذا توفرت نتائج البحث المباشر أدناه، استند إليها بدقة. وإن لم تتوفر، أجب بأفضل معلوماتك وتحليلك بذكاء وبدون إحباط المستخدم.
+   - أكمل دائماً إجابتك بالكامل ولا تتوقف في منتصف الجملة.
 3. أجب بنفس لغة ولهجة المستخدم (تونسي، عربي، فرنسي، إنجليزي) بذكاء وحرارة وترحاب.
-4. إذا سأل عن AutomateHub: بين أنها المنصة الرائدة القادمة لأتمتة العمليات ووكلاء الذكاء الاصطناعي لرفع إنتاجية الأعمال.
+4. نسق إجاباتك بالعناوين العريضة والنقاط الواضحة.
 
-${searchContext ? `### نتائج البحث المباشر في الأنترنت والويب (أحدث الأخبار والوقائع):\n${searchContext}\n` : ""}`;
+${searchContext ? `### نتائج البحث المباشر في الويب:\n${searchContext}\n` : ""}`;
 
     const formattedMessages = [
       { role: "system", content: systemPrompt }
@@ -163,8 +158,8 @@ ${searchContext ? `### نتائج البحث المباشر في الأنترن�
       body: JSON.stringify({
         model: MODEL_NAME,
         messages: formattedMessages,
-        temperature: 0.35,
-        max_tokens: 600,
+        temperature: 0.4,
+        max_tokens: 2048,
         stream: true
       })
     });
