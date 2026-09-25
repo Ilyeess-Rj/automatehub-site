@@ -744,6 +744,7 @@
           let botRow = null;
           let botBubble = null;
           let fullText = '';
+          let renderScheduled = false;
 
           try {
             const reader = response.body.getReader();
@@ -774,13 +775,23 @@
                     const token = json.choices?.[0]?.delta?.content || '';
                     if (token) {
                       fullText += token;
-                      botBubble.innerHTML = marked.parse(fullText);
-                      chatBox.scrollTop = chatBox.scrollHeight;
+                      if (!renderScheduled) {
+                        renderScheduled = true;
+                        requestAnimationFrame(() => {
+                          botBubble.innerHTML = marked.parse(fullText);
+                          chatBox.scrollTop = chatBox.scrollHeight;
+                          renderScheduled = false;
+                        });
+                      }
                     }
                   } catch (e) {}
                 }
               }
             }
+
+            // Final render to ensure all tokens are fully shown
+            botBubble.innerHTML = marked.parse(fullText);
+            chatBox.scrollTop = chatBox.scrollHeight;
           } catch (streamErr) {
             console.warn('Stream ended or interrupted:', streamErr);
           }
